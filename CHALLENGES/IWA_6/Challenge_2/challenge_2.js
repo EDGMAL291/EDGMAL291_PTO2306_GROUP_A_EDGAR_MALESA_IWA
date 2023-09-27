@@ -11,8 +11,8 @@ const minuteOfDay = 00;
 let balance;
 
 if ((typeof hourOfDay !== 'undefined') && (typeof minuteOfDay !== 'undefined') && (hourOfDay === 0) && (minuteOfDay === 0)) {
-    const taxAsDecimal = parseFloat(tax) / 100;
-    const salaryAfterTax = salary * (1 - taxAsDecimal); 
+    const taxDecimal = parseFloat(tax) / 100;
+    const salaryAfterTax = salary * (1 - taxDecimal); 
     balance = salaryAfterTax - transport - food - rent;
 }
 
