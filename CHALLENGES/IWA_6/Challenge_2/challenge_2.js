@@ -19,5 +19,5 @@ if ((typeof hourOfDay !== 'undefined') && (typeof minuteOfDay !== 'undefined') &
 if (typeof balance !== 'undefined') {
     console.log("R " + balance.toFixed(2));
 } else {
-    console.log("Time is not known or it's not midnight, balance is not calculated.");
+    console.log("Time is not known or it's not midnight");
 }
