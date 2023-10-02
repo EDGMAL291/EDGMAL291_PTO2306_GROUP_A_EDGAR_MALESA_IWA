@@ -30,7 +30,7 @@ const leo = {
 const sarah = {
 	name: sarahName + sarahSurname,
 	age: 62,
-	"access id": "6b279ae5-5657-4240-80e9-23f6b635f7a8",
+	"access id": "6b279ae5-5657-4240-80e9-23f6b635f7a8", // quotes due to space, hyphen and number
 	balance: sarahBalance,
 	address: {
 		number:  sarahNumber,
@@ -38,5 +38,5 @@ const sarah = {
 		"postal-code": sarahPostal
 	}
 }
-console.log("Leo:", leo, leo["address"]["postal-code"]);
-console.log("Sarah", sarah, sarah["address"]["postal-code"]);
+console.log(leo, leo["address"]["postal-code"]);
+console.log(sarah, sarah["address"]["postal-code"]);
