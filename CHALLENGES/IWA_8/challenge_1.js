@@ -38,5 +38,5 @@ const sarah = {
 		"postal-code": sarahPostal
 	}
 }
-console.log(leo, leo["address"]["postal-code"]);
-console.log(sarah, sarah["address"]["postal-code"]);
+console.log("Leo:", leo, leo["address"]["postal-code"]);
+console.log("Sarah", sarah, sarah["address"]["postal-code"]);
