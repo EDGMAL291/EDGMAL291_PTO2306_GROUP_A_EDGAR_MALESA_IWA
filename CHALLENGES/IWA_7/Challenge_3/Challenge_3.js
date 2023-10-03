@@ -22,6 +22,7 @@ const totalOwed = `Total amount owed: R ${owed}`;
 const leo = `${leoName.trim()} ${leoSurname.trim()} (Owed: R ${positiveLeo})`;
 const sarah = `${sarahName.trim()} ${sarahSurname.trim()} (Owed: R ${positiveSarah})`;
 
+// used double \n to create 2 empty lines. 
 const result = `\n${leo}\n${sarah}\n\n${divider}\n  ${totalOwed}  \n${divider}\n`;
 
 console.log(result);
