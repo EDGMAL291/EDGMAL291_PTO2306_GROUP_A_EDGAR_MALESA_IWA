@@ -16,7 +16,7 @@ const sarahPostal = '0310'
 const leo = {
     name: leoName,
 	balance: leoBalance,
-	"access id":" 47afb389-8014-4d0b-aff3-e40203d2107f", /* keys or values are to be put in "" if they have a hyphen,
+	"access id":" 47afb389-8014-4d0b-aff3-e40203d2107f", /* keys or values are put in "" if they have a hyphen,
     space or start with a number. that is why these are in quotation marks. and they are called like .[access id]
     */
 	age: 24,
