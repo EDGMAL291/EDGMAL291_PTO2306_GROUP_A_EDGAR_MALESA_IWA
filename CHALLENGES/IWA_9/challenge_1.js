@@ -33,11 +33,17 @@ const rent = {
 /* changed tax.913 to [] notation, numbers, or strings with special characters can only be accesed 
    using bracket notation. i used parseInt to remove the percentage and turn Tax into a number.
 */   
+//Opted for parseFloat to change string to a decimal number.
 const taxValue = parseFloat(tax['913'].replace('%', ''));
-const taxInDecimal = taxValue / 100;
+//Used Number() to change tax as string to number.
+const taxDecimal = Number(taxValue) / 100;
 
-/* changed variable name to salaryAfterTax for readability and corrected the formula as to Bodmas rule.
+/* changed variable name to salaryAfterTax for readability and corrected the formula to accomodate Bodmas rule.
 */
-const salaryAfterTax = salary * (1 - taxInDecimal)
-const balance = salaryAfterTax - expenses.transport - expenses.food - expenses[`${lodging}-${size}`]
+const salaryAfterTax = salary * (1 - taxDecimal)
+//Added `${}` to interpolate size and lodging.
+const rentType = `${size}-${lodging}`;
+//Used . notation instead of [] notation. 
+const balance = salaryAfterTax - expenses.transport - expenses.food - rent[rentType]
+//Used toFixed to round of to 2 decimal places. 
 console.log(balance.toFixed(2))
