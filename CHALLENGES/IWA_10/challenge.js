@@ -54,52 +54,77 @@ const futureId = 9
 // Do not change code above this comment
 
 //Used bracket notation and ? to check if futureId is available in the holidays object.
-console.log(holidays[futureId]?.name || 'ID {futureId} not created yet')
+console.log(holidays[futureId]?.name || 'ID ' + futureId + ' not created yet')
 
-copied = {...holidays[6]}
-copied = { name: 'X-mas Day' }
-correctDate = copied.date
-correctDate.sethours = 0
-correctDate.setminutes = 0
-isEarlier = copied.date < holidays[6].date
+/* I used spread operator to create a clone of Holiday[6] for variable copied. i used spread operator
+   because it lets me assign new values to copied without changing or assigning new values to Holiday[6]
+*/
+const copied = {...holidays[christmas]};
+copied.name = 'X-mas Day';
+copied.date = new Date(holidays[christmas].date)
+
+/* Used setHours() and setMinutes() instead of assigning the values to correctDate.hour with an equal sign.
+this is going to change time for the copied object to 00:00 from 13:25. 
+*/ 
+copied.date.setHours(0);
+copied.date.setMinutes(0);
+
+/*Added getTime() to both compared values, to turn the date into time in milliseconds so that i can easily compare
+the two dates. The 
+*/  
+//The following code will and should return true. 00:00 has less milliseconds than 13:25   
+const isEarlier = copied.date.getTime() < holidays[christmas].date.getTime();
+//This should log New date is earlier: True
 console.log('New date is earlier:', isEarlier)
+
 if (isEarlier) {
-copied.date = correctDate
-console.log('ID change:', holidays[christmas].id != copied.id || copied.id)
-console.log('Name change:', holidays[christmas].name != copied.name || copied.name)
-console.log('Date change:', holidays[christmas].date != copied.date || copied.date)
-}
+console.log('ID change:', holidays[christmas].id != copied.id) 
+console.log('Name change:', copied.name) 
+console.log('Date change:', copied.date)
+};
+/* Added parenthesis to getTime to the following objects and converted date to milliseconds. 
+Math.min is going to assign the earliest date to firstHolidayTimestamp and Math.max will assign the latest or 
+the last holiday of the year to lastHolidayTimestamp.
+*/
 const firstHolidayTimestamp = Math.min(
-    holidays[0].date.getTime,
-    holidays[1].date.getTime,
-    holidays[2].date.getTime,
-    holidays[3].date.getTime,
-    holidays[4].date.getTime,
-    holidays[5].date.getTime,
-    holidays[6].date.getTime,
-    holidays[7].date.getTime,
-    holidays[8].date.getTime,
-)
+    new Date (holidays[0].date).getTime(),
+    holidays[1].date.getTime(),
+    holidays[2].date.getTime(),
+    holidays[3].date.getTime(),
+    holidays[4].date.getTime(),
+    holidays[5].date.getTime(),
+    holidays[6].date.getTime(),
+    holidays[7].date.getTime(),
+    holidays[8].date.getTime(),
+);
 
 const lastHolidayTimestamp = Math.max(
-    holidays[0].date.getTime,
-    holidays[1].date.getTime,
-    holidays[2].date.getTime,
-    holidays[3].date.getTime,
-    holidays[4].date.getTime,
-    holidays[5].date.getTime,
-    holidays[6].date.getTime,
-    holidays[7].date.getTime,
-    holidays[8].date.getTime,
-)
+    new Date (holidays[0].date).getTime(),
+    holidays[1].date.getTime(),
+    holidays[2].date.getTime(),
+    holidays[3].date.getTime(),
+    holidays[4].date.getTime(),
+    holidays[5].date.getTime(),
+    holidays[6].date.getTime(),
+    holidays[7].date.getTime(),
+    holidays[8].date.getTime(),
+);
+//created new variables and converted date from milliseconds to normal date.
+const firstHoliday = new Date(firstHolidayTimestamp);
+const lastHoliday = new Date(lastHolidayTimestamp);
 
-const firstDay = firstHolidayTimestamp.getDate
-const firstMonth = firstHolidayTimestamp.getMonth
-const lastDay = lastHolidayTimestamp.getDate
-const lastMonth = lastHolidayTimestamp.getMonth
+/*created new variables to store days, months and year from the converted dates and then added padding to have
+a date format of DD/MM/YYYY for both 
+*/
+const firstDay = String(firstHoliday.getDate()).padStart(2, '0');
+const firstMonth = String(firstHoliday.getMonth()+ 1).padStart(2, '0');
 
-console.log('{firstDay}/{firstMonth}/{currentYear}')
-console.log('{lastDay}/{lastMonth}/{currentYear}')
+const lastDay = String(lastHoliday.getDate()).padStart(2, '0');
+const lastMonth = String(lastHoliday.getMonth()+ 1).padStart(2,'0');
 
-const randomHoliday = holidays[Math.random]
-console.log(randomHoliday.date)
+console.log(firstDay + '/' + firstMonth + '/' + `${currentYear}`)
+console.log(lastDay + '/' + lastMonth + '/' + `${currentYear}`)
+
+const randomIndex = Math.floor(Math.random() * 9);
+const randomHoliday = holidays[randomIndex]
+console.log(`${randomHoliday.name}, ${randomHoliday.date}`);

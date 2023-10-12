@@ -34,7 +34,7 @@ const rent = {
    using bracket notation. i used parseInt to remove the percentage and turn Tax into a number.
 */   
 //Opted for parseFloat to change string to a decimal number.
-const taxValue = parseFloat(tax['913'].replace('%', ''));
+const taxValue = parseFloat(tax[913].replace('%', ''));
 //Used Number() to change tax as string to number.
 const taxDecimal = Number(taxValue) / 100;
 
