@@ -20,79 +20,79 @@ const getDaysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 
 // Only edit below 
 
 const createArray = (length) => {
-    const result = [];
+    const result = []
+
     for (let i = 0; i < length; i++) {
-        result.push(i);
+        result.push(i)
     }
-    return result;
+
+    return result
 }
 
+const createData = () => {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+    const startDayOfWeek = firstDayOfMonth.getDay();
+    const daysInMonth = getDaysInMonth(today);
+
+    // Calculates number of weeks in a month.
+    const totalDays = startDayOfWeek + daysInMonth;
+    const totalWeeks = Math.ceil(totalDays / 7);
+
+    // Creates an array for weeks
+    const weeksArray = createArray(totalWeeks);
+
+    // Starting from the first day of the week in which the month begins
+    let currentDay = 1 - startDayOfWeek; 
+    
+    // Iterate over each week
+    const weeks = weeksArray.map((weekIndex) => {
+        const days = [];
+
+        // Populate days in the week
+        for (let i = 0; i < 7; i++) {
+            days.push({
+                day: currentDay > 0 && currentDay <= daysInMonth ? currentDay : '',
+                isToday: currentDay === today.getDate() && currentMonth === today.getMonth(),
+                dayOfWeek: i
+            });
+            currentDay++;
+        }
+
+        return { week: weekIndex + 1, days };
+    });
+
+    return weeks;
+};
 
 
-    const createData = () => {
-        const current = new Date();
-        current.setDate(1);
-    
-        const startDay = current.getDay();
-        const daysInMonth = getDaysInMonth(current);
-    
-        const weeks = createArray(6); // Might need up to 6 weeks depending on the month and start day
-        const daysOfWeek = createArray(7); // 7 days in a week
-        const result = [];
-    
-        for (const weekIndex of weeks) {
-            const weekData = {
-                week: weekIndex + 1,
-                days: []
-            };
-    
-            for (const dayIndex of daysOfWeek) {
-                const day = weekIndex * 7 + dayIndex - startDay + 1;
-                const isValid = day > 0 && day <= daysInMonth;
-    
-                weekData.days.push({
-                    dayOfWeek: dayIndex,
-                    value: isValid ? day : '',
-                });
-            }
-    
-            result.push(weekData);
+const addCell = (existing, classString, content) => {
+    return existing + `<td class="${classString}">${content}</td>`;
+};
+
+
+const createHtml = (data) => {
+    let html = '';
+
+    for (const { week, days } of data) {
+        let weekRow = addCell('', 'table__cell table__cell_sidebar', `Week ${week}`);
+        for (const { day, isToday, dayOfWeek } of days) {
+            let classString = 'table__cell';
+            if (isToday) classString += ' table__cell_today';
+            if (dayOfWeek === 0 || dayOfWeek === 6) classString += ' table__cell_weekend';
+            if (week % 2 === 0) classString += ' table__cell_alternate';
+
+            weekRow = addCell(weekRow, classString, day);
         }
-    
-        return result;
+
+        html += `<tr>${weekRow}</tr>`;
     }
-    
-    
-    const createHtml = (data) => {
-        let result = '';
-    
-        for (const { week, days } of data) {
-            let row = `<tr>`;
-            // Add the week number to the first cell of the row
-            row += `<td class="table__cell table__cell_sidebar">Week ${week}</td>`;
-    
-            for (const { dayOfWeek, value } of days) {
-                const today = new Date();
-                const isToday = value === today.getDate() && data[0].days[today.getDay()].value === today.getDate();
-                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // 0 = Sunday, 6 = Saturday
-                let classString = 'table__cell';
-    
-                // Apply additional styling for today, weekends, and alternate rows
-                if (isToday) classString += ' table__cell_today';
-                if (isWeekend) classString += ' table__cell_weekend';
-                if (week % 2 === 0) classString += ' table__cell_alternate';
-    
-                // Add the day cell with the appropriate class string and value
-                row += `<td class="${classString}">${value || '&nbsp;'}</td>`;
-            }
-    
-            // Close the table row
-            row += `</tr>`;
-            result += row;
-        }
-        
-        return result;
-    }
+
+    return html;
+};
+
 
 // Only edit above
 
