@@ -37,21 +37,21 @@ const createData = () => {
     const startDayOfWeek = firstDayOfMonth.getDay();
     const daysInMonth = getDaysInMonth(today);
 
-    // Calculates number of weeks in a month.
+
     const totalDays = startDayOfWeek + daysInMonth;
     const totalWeeks = Math.ceil(totalDays / 7);
 
-    // Creates an array for weeks
+
     const weeksArray = createArray(totalWeeks);
 
-    // Starting from the first day of the week in which the month begins
+
     let currentDay = 1 - startDayOfWeek; 
     
-    // Iterate over each week
+
     const weeks = weeksArray.map((weekIndex) => {
         const days = [];
 
-        // Populate days in the week
+
         for (let i = 0; i < 7; i++) {
             days.push({
                 day: currentDay > 0 && currentDay <= daysInMonth ? currentDay : '',
@@ -67,9 +67,8 @@ const createData = () => {
     return weeks;
 };
 
-
 const addCell = (existing, classString, content) => {
-    return existing + `<td class="${classString}">${content}</td>`;
+    return [`${existing} <td class="${classString}">${content}</td>`];
 };
 
 
@@ -77,12 +76,12 @@ const createHtml = (data) => {
     let html = '';
 
     for (const { week, days } of data) {
-        let weekRow = addCell('', 'table__cell table__cell_sidebar', `Week ${week}`);
+        let weekRow = addCell("", "table__cell table__cell_sidebar", `Week ${week}`);
         for (const { day, isToday, dayOfWeek } of days) {
             let classString = 'table__cell';
-            if (isToday) classString += ' table__cell_today';
-            if (dayOfWeek === 0 || dayOfWeek === 6) classString += ' table__cell_weekend';
-            if (week % 2 === 0) classString += ' table__cell_alternate';
+            if (isToday) classString += " table__cell_today";
+            if (dayOfWeek === 0 || dayOfWeek === 6) classString += " table__cell_weekend";
+            if (week % 2 === 0) classString += " table__cell_alternate";
 
             weekRow = addCell(weekRow, classString, day);
         }
