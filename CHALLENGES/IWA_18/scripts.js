@@ -1,4 +1,10 @@
-import { html } from "./view";
+import {
+    html,
+    createOrderHtml,
+    moveToColumn,
+    updateDraggingHtml,
+  } from "./view.js";
+  import { COLUMNS, createOrderData, state, updateDragging } from "./data.js";
 
 /**
  * A handler that fires when a user drags over any element inside a column. In
@@ -11,6 +17,8 @@ import { html } from "./view";
  *
  * @param {Event} event 
  */
+
+
 const handleDragOver = (event) => {
     event.preventDefault();
     const path = event.path || event.composedPath()
@@ -27,17 +35,17 @@ const handleDragOver = (event) => {
     if (!column) return
     updateDragging({ over: column })
     updateDraggingHtml({ over: column })
-}
+};
+let draggedId;
 
-//event handlers
 const handleDragStart = (event) => {
-    const orderId = event.target.dataset.id;
-    if (!orderId) return;
-  
-    state.dragging.source = orderId;
-  };
-  const handleDragEnd = (event) => {
-    const orderId = state.dragging.source;
+
+    draggedId = event.target.dataset.id;
+    event.dataTransfer.setData("text/plain", draggedId);
+};
+
+const handleDragEnd = (event) => {      
+    const orderId = state.dragging.source;      
     const newColumn = state.dragging.over;
   
     if (newColumn && orderId) {
@@ -47,25 +55,38 @@ const handleDragStart = (event) => {
   
     state.dragging = { source: null, over: null };
   };
+
   
-//help toggle handler.
+
 const handleHelpToggle = (event) => {
-    const overlay = html.help.overlay;
-    overlay.open = !overlay.open;
-    if(!overlay.open){
-        html.other.add.focus();
+
+    const helpButton = event.target === html.other.help;
+    const closeButton = event.target === html.help.cancel;
+    const helpOverlay = html.help.overlay;
+
+    if (helpButton) {
+      helpOverlay.show();
+    } else if (closeButton) {
+      helpOverlay.close();
+      focus(); 
     }
-};
+  };
+
 const handleAddToggle = (event) => {
+
+    const addButton = event.target === html.other.add;
+    const closeButton = event.target === html.add.cancel
+
     const overlay = html.add.overlay;
+    const formField = html.add.form;
 
-    overlay.open = !overlay.open;
+    if (addButton){
+        overlay.show();
 
-    if (overlay.open){
-        html.add.tittle.value = '';
-        html.add.table.value = '';
-    }else{
-        html.other.add.focus();
+    }else if (closeButton){
+        overlay.close();
+        formField.reset();
+        focus()
     }
 };
 
@@ -75,49 +96,80 @@ const handleAddSubmit = (event) => {
     const title = html.add.title.value;
     const table = html.add.table.value;
 
-    const newOrder = createOrderData({ title, table, column: 'ordered' });
-    state.orders[newOrder.id] = newOrder;
-    const orderElement = createOrderHtml(newOrder);
-    html.columns['ordered'].appendChild(orderElement); 
+    const overlay = html.add.overlay;
+    const formField = html.add.form;
 
-    html.add.overlay.open = false; 
+    const newOrder = createOrderData({ title, table, column: 'ordered' });
+    const orderHtml = createOrderHtml(newOrder);
+    const ordered = html.columns.ordered;
+
+    ordered.appendChild(orderHtml);
+    formField.reset();
+    overlay.close()
+    focus();
 };
 
 const handleEditToggle = (event) => {
-    const orderId = event.target.closest('.order').dataset.id;
-    const order = state.orders[orderId];
-    if (!order) return;
-  
-    html.edit.title.value = order.title;
-    html.edit.table.value = order.table;
-    html.edit.column.value = order.column;
-    html.edit.id.value = order.id;
-  
-    html.edit.overlay.open = true;
-  };
-  
-const handleEditSubmit = (event) => {
+    const order = event.target.closest(".order");
+    const cancelButton = event.target === html.edit.cancel;
+
+    const formFields = html.edit.form;
+    const overlay = html.edit.overlay;
+
+    let orderID = event.target.dataset.id;
    
-        event.preventDefault();
-        const id = html.edit.id.value;
-        const updatedOrder = {
-          title: html.edit.title.value,
-          table: html.edit.table.value,
-          column: html.edit.column.value,
-          id,
-          created: state.orders[id].created,
-        };
-        state.orders[id] = updatedOrder;
-        moveToColumn(id, updatedOrder.column);
-        html.edit.overlay.open = false;
-    
-};
-const handleDelete = (event) => {
-    const orderId = html.edit.id.value;
-    delete state.orders[orderId];
-    document.querySelector(`[data-id="${orderId}"]`).remove();
-    html.edit.overlay.open = false;
+  
+    if (order) {
+      overlay.show();
+
+    } else if (cancelButton) {
+      overlay.close();
+      formFields.reset();
+      focus();
+
+    }
   };
+  
+
+const handleEditSubmit = (event) => {
+    event.preventDefault();
+  
+    const updateButton = event.target === html.edit.form;
+    const overlay = html.edit.overlay;
+  
+    const newTitle = html.edit.title.value;
+    const newTable = html.edit.table.value;
+    const newStatus = html.edit.column.value;
+    const formFields = html.edit.form;
+    const orderHtml = document.querySelector(`[data-id="${orderID}"]`);
+  
+    if (updateButton) {
+      orderHtml.querySelector("[data-order-title]").textContent = newTitle;
+      orderHtml.querySelector("[data-order-table]").textContent = newTable;
+    
+      moveToColumn(orderID, newStatus);
+      formFields.reset();
+      overlay.close();
+      focus();
+    } else {
+        console.error("Element with the given orderID not found");
+    }
+  };
+
+  const handleDelete = (event) => {
+    const deleteButton = event.target === html.edit.delete;
+    const order = document.querySelector(`[data-id='${orderID}']`);
+
+    if (deleteButton && order) {
+        order.remove();
+        overlay.close();
+        focus(); 
+    } else if (!order) {
+        console.error(`Element with orderID '${orderID}' not found`);
+    } else {
+       
+    }
+};
 
 //add order, cancel order, add to order (adding eventListeners)
 html.add.cancel.addEventListener('click', handleAddToggle)
@@ -141,4 +193,4 @@ for (const htmlColumn of Object.values(html.columns)) {
 //dragging over columns event listener
 for (const htmlArea of Object.values(html.area)) {
     htmlArea.addEventListener('dragover', handleDragOver)
-}
+};
